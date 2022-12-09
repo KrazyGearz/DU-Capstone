@@ -1,0 +1,26 @@
+{
+  "name": "du_capstone",
+  "version": "1.0.0",
+  "main": "server.js",
+  "author": "A1C Brenden McQuitter",
+  "dependencies": {
+    "apollo-server-express": "^3.11.1",
+    "cors": "^2.8.5",
+    "express": "^4.16.4",
+    "graphql": "^16.6.0"
+  },
+  "devDependencies": {
+    "@babel/cli": "^7.10.1",
+    "@babel/core": "^7.10.2",
+    "@babel/node": "^7.2.2",
+    "@babel/polyfill": "^7.12.1",
+    "@babel/preset-env": "^7.10.2",
+    "babel-jest": "^29.3.1",
+    "node-fetch": "^2.6.1",
+    "supertest": "^6.3.2"
+  },
+  "scripts": {
+    "start": "nodemon --exec babel-node server.js",
+    "test": "jest --watch"
+  }
+}
