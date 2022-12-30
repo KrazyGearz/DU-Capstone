@@ -9,17 +9,16 @@ const app = express();
 app.use(cors());
 app.use(express.json());
 
-describe('api', () => {
-    let books;
-    
-    
-        const testServer = new ApolloServer({
-            typeDefs,
-            resolvers,
-          })
+describe('api', () => 
+{
+    const testServer = new ApolloServer(
+        {
+        typeDefs,
+        resolvers,
+        })
     
   
-    describe('add book', () => {
+    describe('get book', () => {
         const getbook = `
         query GetBook($getBookId: ID!) {
             getBook(id: $getBookId) {
@@ -36,7 +35,7 @@ describe('api', () => {
           `;
 
 
-      it('should return book by ID', async () => {
+      it('should return a book by ID', async () => {
         const response = await testServer.executeOperation(
             {
               query: getbook,
@@ -63,17 +62,35 @@ describe('api', () => {
             },
           );
       });
-  
-      it('should respond with an array of pets', async () => {
-        const response = await request(app).get('/api/v1/pets');
-        expect(response.body).toEqual(pets);
-      });
     });
-    describe('get /api/v1/pets/:id', () => {
-      it('should return status 200 if the pet exists', async () => {
-        const response = await request(app).get('/api/v1/pets/1');
-        expect(response.status).toBe(200);
-      });
+    describe('add book', () => {
+        it('should return a book by ID', async () => {
+            const response = await testServer.executeOperation(
+                {
+                  query: getbook,
+                  variables: { getBookId: 2 },
+                });
+            expect(response.body.singleResult.data).toEqual(
+                {
+                    "getBook": {
+                        "title": "Harry Potter and the Prisoner of Azkaban",
+                        "id": "2",
+                        "description": null,
+                        "coverImage": "https://m.media-amazon.com/images/I/51DQeuJ5QDL._SY291_BO1,204,203,200_QL40_FMwebp_.jpg",
+                        "categories": [
+                          {
+                            "name": "Fantasy",
+                            "id": "1"
+                          },
+                          {
+                            "name": "Fiction",
+                            "id": "2"
+                          }
+                        ]
+                      },
+                },
+              );
+          });
       
       it('should with the correct pet if it exists', async () => {
         const response = await request(app).get('/api/v1/pets/1');
@@ -83,7 +100,7 @@ describe('api', () => {
       it('should return status 404 if the pet does not exists', async () => {
         const response = await request(app).get('/api/v1/pets/7');
         expect(response.status).toBe(404);
-      });
+      });//
       
       it('should with respond Pet not found', async () => {
         const response = await request(app).get('/api/v1/pets/7');
