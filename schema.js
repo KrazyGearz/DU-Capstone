@@ -1,3 +1,4 @@
+import { gql } from 'apollo-server-express';
 
 // Pre-seeded data
  const books = [
@@ -103,4 +104,79 @@
     books: ['4']
   }
 ];
-export {books, authors, categories};
+
+const typeDefs = gql`
+  type Book {
+    id: ID!
+    title: String!
+    author: Author!
+    coverImage: String
+    categories: [Category!]!
+    description: String
+  }
+
+  type Author {
+    id: ID!
+    firstName: String
+    lastName: String
+    books: [Book!]!
+  }
+
+  type Category {
+    id: ID!
+    name: String!
+    books: [Book!]!
+  }
+
+  type Query {
+    getBooks: [Book!]!
+    getBook(id: ID!): Book
+  }
+
+  type Mutation {
+    addBook(
+      title: String!
+      authorId: ID!
+      coverImage: String
+      categoryIds: [ID!]!
+      description: String
+    ): Book
+  }
+`;
+
+const resolvers = {
+    Book: {
+      author: ({ author: authorId }) =>
+        authors.find(author => author.id === authorId),
+      categories: ({ categories: categoryIds }) =>
+        categories.filter(category => categoryIds.includes(category.id))
+    },
+    Author: {
+      books: ({ id: bookId }) => books.filter(book => book.id === bookId)
+    },
+    Category: {
+      books: ({ id: bookId }) => books.filter(book => book.id === bookId)
+    },
+    Query: {
+      getBooks: () => books,
+      getBook: (_parent, { id }) => books.find(book => book.id === id),
+    },
+    Mutation: {
+      addBook: (
+        _parent,
+        { title, authorId, coverImage, categoryIds, description }
+      ) => {
+        const book = {
+          id: String(books.length + 1),
+          title,
+          author: authorId,
+          coverImage: coverImage,
+          categories: categoryIds,
+          description: description
+        };
+        books.push(book);
+        return book;
+      },
+    }
+  };
+  export { typeDefs, resolvers };
