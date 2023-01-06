@@ -21,6 +21,7 @@
     "@babel/preset-env": "^7.10.2",
     "babel-jest": "^29.3.1",
     "node-fetch": "^2.6.1",
+    "prettier": "2.8.1",
     "supertest": "^6.3.2"
   },
   "scripts": {

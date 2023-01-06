@@ -131,6 +131,7 @@ const typeDefs = gql`
   type Query {
     getBooks: [Book!]!
     getBook(id: ID!): Book
+    getAuthor(id: ID!): Author
   }
 
   type Mutation {
@@ -152,7 +153,7 @@ const resolvers = {
         categories.filter(category => categoryIds.includes(category.id))
     },
     Author: {
-      books: ({ id: bookId }) => books.filter(book => book.id === bookId)
+      books: ({ books: bookIds }) => books.filter(book => bookIds.includes(book.id))
     },
     Category: {
       books: ({ id: bookId }) => books.filter(book => book.id === bookId)
@@ -160,6 +161,7 @@ const resolvers = {
     Query: {
       getBooks: () => books,
       getBook: (_parent, { id }) => books.find(book => book.id === id),
+      getAuthor: (_parent, {id}) => authors.find(author => author.id ===id),
     },
     Mutation: {
       addBook: (
