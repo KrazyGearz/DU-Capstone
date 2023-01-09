@@ -9,17 +9,16 @@ const app = express();
 app.use(cors());
 app.use(express.json());
 
-describe('api', () => {
-    let books;
-    
-    
-        const testServer = new ApolloServer({
-            typeDefs,
-            resolvers,
-          })
+describe('api', () => 
+{
+    const testServer = new ApolloServer(
+        {
+        typeDefs,
+        resolvers,
+        })
     
   
-    describe('add book', () => {
+    describe('get book', () => {
         const getbook = `
         query GetBook($getBookId: ID!) {
             getBook(id: $getBookId) {
@@ -36,7 +35,7 @@ describe('api', () => {
           `;
 
 
-      it('should return book by ID', async () => {
+      it('should return a book by ID', async () => {
         const response = await testServer.executeOperation(
             {
               query: getbook,
@@ -63,31 +62,53 @@ describe('api', () => {
             },
           );
       });
-  
-      it('should respond with an array of pets', async () => {
-        const response = await request(app).get('/api/v1/pets');
-        expect(response.body).toEqual(pets);
-      });
     });
-    describe('get /api/v1/pets/:id', () => {
-      it('should return status 200 if the pet exists', async () => {
-        const response = await request(app).get('/api/v1/pets/1');
-        expect(response.status).toBe(200);
-      });
-      
-      it('should with the correct pet if it exists', async () => {
-        const response = await request(app).get('/api/v1/pets/1');
-        expect(response.body).toEqual(pets[0]);
-      });
+    describe('add book', () => {
 
-      it('should return status 404 if the pet does not exists', async () => {
-        const response = await request(app).get('/api/v1/pets/7');
-        expect(response.status).toBe(404);
-      });
-      
-      it('should with respond Pet not found', async () => {
-        const response = await request(app).get('/api/v1/pets/7');
-        expect(response.body).toEqual('Pet not found');
-      });
+      const addbook = `
+      mutation AddBook($title: String!, $authorId: ID!, $categoryIds: [ID!]!, $addBookDescription2: String) {
+        addBook(title: $title, authorId: $authorId, categoryIds: $categoryIds, description: $addBookDescription2) {
+          title
+          id
+          description
+          categories {
+            id
+          }
+          author {
+            id
+          }
+        }
+      }
+          `;
+        it('should add a book and return added info', async () => {
+            const response = await testServer.executeOperation(
+                {
+                  query: addbook,
+                  variables: { addBookDescription2: "This is a description",
+                  title: "Some great book",
+                  authorId: 2,
+                  categoryIds: [1,2] },
+                });
+            expect(response.body.singleResult.data).toEqual(
+                {
+                  "addBook": {
+                    "title": "Some great book",
+                    "id": "5",
+                    "description": "This is a description",
+                    "categories": [
+                      {
+                        "id": "1"
+                      },
+                      {
+                        "id": "2"
+                      }
+                    ],
+                    "author": {
+                      "id": "2"
+                    }
+                  },
+                },
+              );
+          });
     })
   });
